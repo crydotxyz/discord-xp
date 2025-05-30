@@ -110,7 +110,7 @@ async def check_server_membership(session, nama_token, token, guild_id):
                             log_message(nama_token, "info", "✅ Masih ada di server")
                             return {"valid": True, "in_server": True}
                     
-                    log_message(nama_token, "warning", "⚠️ Tidak ada di server (Banned/Kicked)")
+                    log_message(nama_token, "warning", "⚠️ Tidak ada di server")
                     return {"valid": True, "in_server": False}
     except Exception as e:
         log_message(nama_token, "error", f"❌ Error saat cek membership: {str(e)}")
@@ -216,7 +216,7 @@ async def monitor_token(session, nama_token, token, guild_id, all_tokens, monito
             if is_forced_leave:
                 return f"{Fore.YELLOW}Proses Keluar{Style.RESET_ALL}"
             else:
-                return f"{Fore.RED}Banned/Kicked{Style.RESET_ALL}"
+                return f"{Fore.RED}Tidak di server{Style.RESET_ALL}"
         return f"{Fore.GREEN}Di Server{Style.RESET_ALL}"
     
     while monitoring_active[0]:
@@ -230,7 +230,7 @@ async def monitor_token(session, nama_token, token, guild_id, all_tokens, monito
             elif not status["in_server"] and last_status.get("in_server", False):
                 log_message(nama_token, "error", "🚨 Token terdeteksi di-ban/kick dari server!")
                 status_messages[nama_token] = "Banned/Kicked dari server"
-                log_message(nama_token, "info", "🔄 Mengeluarkan token lain dari server...")
+                log_message(nama_token, "info", "🔄 Mengeluarkan semua token dari server...")
                 
                 # Create tasks for all tokens to leave the server
                 leave_tasks = []
@@ -396,7 +396,7 @@ async def main():
             def get_final_status_text(status, has_exited=False):
                 """Get formatted status text for final display."""
                 if has_exited:
-                    return f"{Fore.GREEN}Berhasil Keluar{Style.RESET_ALL}"
+                    return f"{Fore.GREEN}Keluar{Style.RESET_ALL}"
                 if not status.get("valid", True):
                     return f"{Fore.RED}Tidak Valid{Style.RESET_ALL}"
                 elif not status.get("in_server", False):
